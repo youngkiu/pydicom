@@ -175,7 +175,7 @@ class PrivateBlock:
         """
         del self.dataset[self.get_tag(element_offset)]
 
-    def add_new(self, element_offset: int, VR: str, value: object) -> None:
+    def add_new(self, element_offset: int, value: object, VR: str) -> None:
         """Add a private element to the parent :class:`Dataset`.
 
         Adds the private tag with the given `VR` and `value` to the parent
@@ -187,14 +187,14 @@ class PrivateBlock:
         element_offset : int
             The lower 16 bits (e.g. 2 hex numbers) of the element tag
             to be added.
-        VR : str
-            The 2 character DICOM value representation.
         value
             The value of the data element. See :meth:`Dataset.add_new()`
             for a description.
+        VR : str
+            The 2 character DICOM value representation.
         """
         tag = self.get_tag(element_offset)
-        self.dataset.add_new(tag, VR, value)
+        self.dataset.add_new(tag, value, VR=VR)
         self.dataset[tag].private_creator = self.private_creator
 
 
@@ -236,7 +236,7 @@ class Dataset(Dict[BaseTag, _DatasetValue]):
 
     >>> ds = Dataset()
     >>> ds.PatientName = "CITIZEN^Joan"
-    >>> ds.add_new(0x00100020, 'LO', '12345')
+    >>> ds.add_new(0x00100020, '12345', VR='LO')
     >>> ds[0x0010, 0x0030] = DataElement(0x00100030, 'DA', '20010101')
 
     Add a sequence element to the :class:`Dataset`
@@ -249,7 +249,7 @@ class Dataset(Dict[BaseTag, _DatasetValue]):
     Add private elements to the :class:`Dataset`
 
     >>> block = ds.private_block(0x0041, 'My Creator', create=True)
-    >>> block.add_new(0x01, 'LO', '12345')
+    >>> block.add_new(0x01, '12345', VR='LO')
 
     Updating and retrieving element values:
 
@@ -430,7 +430,7 @@ class Dataset(Dict[BaseTag, _DatasetValue]):
         """
         self[data_element.tag] = data_element
 
-    def add_new(self, tag: TagType, VR: str, value: object) -> None:
+    def add_new(self, tag: TagType, value: object, VR: str=None) -> None:
         """Create a new element and add it to the :class:`Dataset`.
 
         Parameters
@@ -439,9 +439,6 @@ class Dataset(Dict[BaseTag, _DatasetValue]):
             The DICOM (group, element) tag in any form accepted by
             :func:`~pydicom.tag.Tag` such as ``[0x0010, 0x0010]``,
             ``(0x10, 0x10)``, ``0x00100010``, etc.
-        VR : str
-            The 2 character DICOM value representation (see DICOM Standard,
-            Part 5, :dcm:`Section 6.2<part05/sect_6.2.html>`).
         value
             The value of the data element. One of the following:
 
@@ -450,7 +447,19 @@ class Dataset(Dict[BaseTag, _DatasetValue]):
             * a multi-value string with backslash separator
             * for a sequence element, an empty :class:`list` or ``list`` of
               :class:`Dataset`
+        VR : str
+            The 2 character DICOM value representation (see DICOM Standard,
+            Part 5, :dcm:`Section 6.2<part05/sect_6.2.html>`).
         """
+
+        if not isinstance(tag, BaseTag):
+            tag = Tag(tag)
+
+        if VR is None:
+            try:
+                VR = dictionary_VR(tag)
+            except:
+                raise ValueError(f'The private tag({tag}) must have a VR value.')
 
         data_element = DataElement(tag, VR, value)
         # use data_element.tag since DataElement verified it
@@ -1021,7 +1030,7 @@ class Dataset(Dict[BaseTag, _DatasetValue]):
             el for el in range(0x10, 0x100)
             if Tag(group, el) not in self._dict
         )
-        self.add_new(Tag(group, first_free_el), 'LO', private_creator)
+        self.add_new(Tag(group, first_free_el), private_creator, VR='LO')
         return new_block(first_free_el)
 
     def private_creators(self, group: int) -> List[str]:

@@ -131,7 +131,7 @@ def code_dataelem(
     else:
         tag = tag_repr(dataelem.tag)
         VR = dataelem.VR
-        line = f"{dataset_name}.add_new({tag}, '{VR}', {valuerep})"
+        line = f"{dataset_name}.add_new({tag}, {valuerep}, VR='{VR}')"
 
     return line
 

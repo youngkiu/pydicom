@@ -211,7 +211,7 @@ class TestWriteFile:
         ds.file_meta = FileMetaDataset()
         ds.is_little_endian = True
         ds.is_implicit_VR = True
-        ds.add_new(0xFFFFFFFF, 'LO', '123456')
+        ds.add_new(0xFFFFFFFF, '123456', VR='LO')
         ds.save_as(fp, write_like_original=True)
 
         fp.seek(0)

@@ -681,7 +681,7 @@ class TestRecordNode:
         """Test group element not added when encoding."""
         fs = FileSet(private)
         node = fs._instances[0].node
-        fs._instances[0].node._record.add_new(0x00080000, "UL", 128)
+        fs._instances[0].node._record.add_new(0x00080000, 128, VR="UL")
         fs._instances[0].node._record.PatientSex = 'F'
         fs, ds, paths = copy_fs(fs, tdir.name)
         item = ds.DirectoryRecordSequence[3]

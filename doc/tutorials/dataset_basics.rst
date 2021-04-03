@@ -464,7 +464,7 @@ The Python type to use for a given VR is given by :doc:`this table
 </guides/element_value_types>`. For **DS** we can use a :class:`str`,
 :class:`int` or :class:`float`, so to add the new element::
 
-    >>> ds.add_new([0x0028, 0x1050], 'DS', "100.0")
+    >>> ds.add_new([0x0028, 0x1050], "100.0", VR="DS")
     >>> elem = ds[0x0028, 0x1050]
     >>> elem
     (0028, 1050) Window Center                       DS: "100.0"

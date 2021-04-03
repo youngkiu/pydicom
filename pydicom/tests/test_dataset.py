@@ -454,8 +454,8 @@ class TestDataset:
         )
         with pytest.warns(UserWarning, match=msg):
             ds.NonDicomVariable = "junk"
-        ds.add_new((0x18, 0x1151), "IS", 150)  # X-ray Tube Current
-        ds.add_new((0x1111, 0x123), "DS", "42.0")  # private - no name in dir()
+        ds.add_new((0x18, 0x1151), 150)  # X-ray Tube Current
+        ds.add_new((0x1111, 0x123), "42.0", VR="DS")  # private - no name in dir()
         expected = ['PatientID',
                     'PatientName',
                     'TreatmentMachineName',
@@ -473,8 +473,8 @@ class TestDataset:
         )
         with pytest.warns(UserWarning, match=msg):
             ds.NonDicomVariable = "junk"
-        ds.add_new((0x18, 0x1151), "IS", 150)  # X-ray Tube Current
-        ds.add_new((0x1111, 0x123), "DS", "42.0")  # private - no name in dir()
+        ds.add_new((0x18, 0x1151), 150)  # X-ray Tube Current
+        ds.add_new((0x1111, 0x123), "42.0", VR="DS")  # private - no name in dir()
         assert 'PatientID' in ds
         assert 'XRayTubeCurrent' in ds
         assert 'TreatmentMachineName' in ds
@@ -748,16 +748,16 @@ class TestDataset:
         ds.LengthToEnd = 12  # 0008,0001
         ds.SOPInstanceUID = '1.2.3.4'  # 0008,0018
         ds.SkipFrameRangeFlag = 'TEST'  # 0008,9460
-        ds.add_new(0x00090001, 'PN', 'CITIZEN^1')
-        ds.add_new(0x00090002, 'PN', 'CITIZEN^2')
-        ds.add_new(0x00090003, 'PN', 'CITIZEN^3')
-        ds.add_new(0x00090004, 'PN', 'CITIZEN^4')
-        ds.add_new(0x00090005, 'PN', 'CITIZEN^5')
-        ds.add_new(0x00090006, 'PN', 'CITIZEN^6')
-        ds.add_new(0x00090007, 'PN', 'CITIZEN^7')
-        ds.add_new(0x00090008, 'PN', 'CITIZEN^8')
-        ds.add_new(0x00090009, 'PN', 'CITIZEN^9')
-        ds.add_new(0x00090010, 'PN', 'CITIZEN^10')
+        ds.add_new(0x00090001, 'CITIZEN^1', VR="PN")
+        ds.add_new(0x00090002, 'CITIZEN^2', VR="PN")
+        ds.add_new(0x00090003, 'CITIZEN^3', VR="PN")
+        ds.add_new(0x00090004, 'CITIZEN^4', VR="PN")
+        ds.add_new(0x00090005, 'CITIZEN^5', VR="PN")
+        ds.add_new(0x00090006, 'CITIZEN^6', VR="PN")
+        ds.add_new(0x00090007, 'CITIZEN^7', VR="PN")
+        ds.add_new(0x00090008, 'CITIZEN^8', VR="PN")
+        ds.add_new(0x00090009, 'CITIZEN^9', VR="PN")
+        ds.add_new(0x00090010, 'CITIZEN^10', VR="PN")
         ds.PatientName = 'CITIZEN^Jan'  # 0010,0010
         ds.PatientID = '12345'  # 0010,0010
         ds.ExaminedBodyThickness = 1.223  # 0010,9431
@@ -830,11 +830,11 @@ class TestDataset:
         ds.LengthToEnd = 12  # 0008,0001
         ds.SOPInstanceUID = '1.2.3.4'  # 0008,0018
         ds.SkipFrameRangeFlag = 'TEST'  # 0008,9460
-        ds.add_new(0xFFFF0001, 'PN', 'CITIZEN^1')
-        ds.add_new(0xFFFF0002, 'PN', 'CITIZEN^2')
-        ds.add_new(0xFFFF0003, 'PN', 'CITIZEN^3')
-        ds.add_new(0xFFFFFFFE, 'PN', 'CITIZEN^4')
-        ds.add_new(0xFFFFFFFF, 'PN', 'CITIZEN^5')
+        ds.add_new(0xFFFF0001, 'CITIZEN^1', VR="PN")
+        ds.add_new(0xFFFF0002, 'CITIZEN^2', VR="PN")
+        ds.add_new(0xFFFF0003, 'CITIZEN^3', VR="PN")
+        ds.add_new(0xFFFFFFFE, 'CITIZEN^4', VR="PN")
+        ds.add_new(0xFFFFFFFF, 'CITIZEN^5', VR="PN")
 
         assert 'CITIZEN^5' == ds[:][0xFFFFFFFF].value
         assert 0xFFFFFFFF not in ds[0x1000:0xFFFFFFFF]
@@ -849,16 +849,16 @@ class TestDataset:
         ds.LengthToEnd = 12  # 0008,0001
         ds.SOPInstanceUID = '1.2.3.4'  # 0008,0018
         ds.SkipFrameRangeFlag = 'TEST'  # 0008,9460
-        ds.add_new(0x00090001, 'PN', 'CITIZEN^1')
-        ds.add_new(0x00090002, 'PN', 'CITIZEN^2')
-        ds.add_new(0x00090003, 'PN', 'CITIZEN^3')
-        ds.add_new(0x00090004, 'PN', 'CITIZEN^4')
-        ds.add_new(0x00090005, 'PN', 'CITIZEN^5')
-        ds.add_new(0x00090006, 'PN', 'CITIZEN^6')
-        ds.add_new(0x00090007, 'PN', 'CITIZEN^7')
-        ds.add_new(0x00090008, 'PN', 'CITIZEN^8')
-        ds.add_new(0x00090009, 'PN', 'CITIZEN^9')
-        ds.add_new(0x00090010, 'PN', 'CITIZEN^10')
+        ds.add_new(0x00090001, 'CITIZEN^1', VR='PN')
+        ds.add_new(0x00090002, 'CITIZEN^2', VR='PN')
+        ds.add_new(0x00090003, 'CITIZEN^3', VR='PN')
+        ds.add_new(0x00090004, 'CITIZEN^4', VR='PN')
+        ds.add_new(0x00090005, 'CITIZEN^5', VR='PN')
+        ds.add_new(0x00090006, 'CITIZEN^6', VR='PN')
+        ds.add_new(0x00090007, 'CITIZEN^7', VR='PN')
+        ds.add_new(0x00090008, 'CITIZEN^8', VR='PN')
+        ds.add_new(0x00090009, 'CITIZEN^9', VR='PN')
+        ds.add_new(0x00090010, 'CITIZEN^10', VR='PN')
         ds.PatientName = 'CITIZEN^Jan'  # 0010,0010
         ds.PatientID = '12345'  # 0010,0010
         ds.ExaminedBodyThickness = 1.223  # 0010,9431
@@ -929,9 +929,9 @@ class TestDataset:
         ds.LengthToEnd = 12  # 0008,0001
         ds.SOPInstanceUID = '1.2.3.4'  # 0008,0018
         ds.SkipFrameRangeFlag = 'TEST'  # 0008,9460
-        ds.add_new(0x00090001, 'PN', 'CITIZEN^1')
-        ds.add_new(0x00090002, 'PN', 'CITIZEN^2')
-        ds.add_new(0x00090003, 'PN', 'CITIZEN^3')
+        ds.add_new(0x00090001, 'CITIZEN^1', VR='PN')
+        ds.add_new(0x00090002, 'CITIZEN^2', VR='PN')
+        ds.add_new(0x00090003, 'CITIZEN^3', VR='PN')
         elem = RawDataElement(0x00090004, 'PN', 9, b'CITIZEN^4', 0, True, True)
         ds.__setitem__(0x00090004, elem)
         elem = RawDataElement(0x00090005, 'PN', 9, b'CITIZEN^5', 0, True, True)
@@ -1007,12 +1007,12 @@ class TestDataset:
 
     def test_get_private_item(self):
         ds = Dataset()
-        ds.add_new(0x00080005, 'CS', 'ISO_IR 100')
-        ds.add_new(0x00090010, 'LO', 'Creator 1.0')
-        ds.add_new(0x00091001, 'SH', 'Version1')
-        ds.add_new(0x00090011, 'LO', 'Creator 2.0')
-        ds.add_new(0x00091101, 'SH', 'Version2')
-        ds.add_new(0x00091102, 'US', 2)
+        ds.add_new(0x00080005, 'ISO_IR 100', VR='CS')
+        ds.add_new(0x00090010, 'Creator 1.0', VR='LO')
+        ds.add_new(0x00091001, 'Version1', VR='SH')
+        ds.add_new(0x00090011, 'Creator 2.0', VR='LO')
+        ds.add_new(0x00091101, 'Version2', VR='SH')
+        ds.add_new(0x00091102, 2, VR='US')
 
         with pytest.raises(ValueError, match='Tag must be private'):
             ds.get_private_item(0x0008, 0x05, 'Creator 1.0')
@@ -1034,13 +1034,13 @@ class TestDataset:
 
     def test_private_block(self):
         ds = Dataset()
-        ds.add_new(0x00080005, 'CS', 'ISO_IR 100')
-        ds.add_new(0x00090010, 'LO', 'Creator 1.0')
-        ds.add_new(0x00091001, 'SH', 'Version1')
+        ds.add_new(0x00080005, 'ISO_IR 100', VR='CS')
+        ds.add_new(0x00090010, 'Creator 1.0', VR='LO')
+        ds.add_new(0x00091001, 'Version1', VR='SH')
         # make sure it works with non-contiguous blocks
-        ds.add_new(0x00090020, 'LO', 'Creator 2.0')
-        ds.add_new(0x00092001, 'SH', 'Version2')
-        ds.add_new(0x00092002, 'US', 2)
+        ds.add_new(0x00090020, 'Creator 2.0', VR='LO')
+        ds.add_new(0x00092001, 'Version2', VR='SH')
+        ds.add_new(0x00092002, 2, VR='US')
 
         # Dataset.private_block
         with pytest.raises(ValueError, match='Tag must be private'):
@@ -1093,31 +1093,31 @@ class TestDataset:
         assert '[Patient Status]' == ds[0x11, 0x1010].name
 
         block = ds.private_block(0x11, 'GEMS_PATI_01')
-        block.add_new(0x10, 'SS', 1)
+        block.add_new(0x10, 1, VR='SS')
         assert '[Patient Status]' == ds[0x11, 0x1010].name
 
     def test_add_new_private_tag(self):
         ds = Dataset()
-        ds.add_new(0x00080005, 'CS', 'ISO_IR 100')
-        ds.add_new(0x00090010, 'LO', 'Creator 1.0')
-        ds.add_new(0x00090011, 'LO', 'Creator 2.0')
+        ds.add_new(0x00080005, 'ISO_IR 100', VR='CS')
+        ds.add_new(0x00090010, 'Creator 1.0', VR='LO')
+        ds.add_new(0x00090011, 'Creator 2.0', VR='LO')
 
         with pytest.raises(ValueError, match='Tag must be private'):
             ds.private_block(0x0008, 'Creator 1.0')
         block = ds.private_block(0x0009, 'Creator 2.0', create=True)
-        block.add_new(0x01, 'SH', 'Version2')
+        block.add_new(0x01, 'Version2', VR='SH')
         assert 'Version2' == ds[0x00091101].value
         block = ds.private_block(0x0009, 'Creator 3.0', create=True)
-        block.add_new(0x01, 'SH', 'Version3')
+        block.add_new(0x01, 'Version3', VR='SH')
         assert 'Creator 3.0' == ds[0x00090012].value
         assert 'Version3' == ds[0x00091201].value
 
     def test_delete_private_tag(self):
         ds = Dataset()
-        ds.add_new(0x00080005, 'CS', 'ISO_IR 100')
-        ds.add_new(0x00090010, 'LO', 'Creator 1.0')
-        ds.add_new(0x00090011, 'LO', 'Creator 2.0')
-        ds.add_new(0x00091101, 'SH', 'Version2')
+        ds.add_new(0x00080005, 'ISO_IR 100', VR='CS')
+        ds.add_new(0x00090010, 'Creator 1.0', VR='LO')
+        ds.add_new(0x00090011, 'Creator 2.0', VR='LO')
+        ds.add_new(0x00091101, 'Version2', VR='SH')
 
         block = ds.private_block(0x0009, 'Creator 2.0')
         with pytest.raises(ValueError,
@@ -1131,9 +1131,9 @@ class TestDataset:
 
     def test_private_creators(self):
         ds = Dataset()
-        ds.add_new(0x00080005, 'CS', 'ISO_IR 100')
-        ds.add_new(0x00090010, 'LO', 'Creator 1.0')
-        ds.add_new(0x00090011, 'LO', 'Creator 2.0')
+        ds.add_new(0x00080005, 'ISO_IR 100', VR='CS')
+        ds.add_new(0x00090010, 'Creator 1.0', VR='LO')
+        ds.add_new(0x00090011, 'Creator 2.0', VR='LO')
 
         with pytest.raises(ValueError, match='Group must be an odd number'):
             ds.private_creators(0x0008)
@@ -1142,10 +1142,10 @@ class TestDataset:
 
     def test_non_contiguous_private_creators(self):
         ds = Dataset()
-        ds.add_new(0x00080005, 'CS', 'ISO_IR 100')
-        ds.add_new(0x00090010, 'LO', 'Creator 1.0')
-        ds.add_new(0x00090020, 'LO', 'Creator 2.0')
-        ds.add_new(0x000900ff, 'LO', 'Creator 3.0')
+        ds.add_new(0x00080005, 'ISO_IR 100', VR='CS')
+        ds.add_new(0x00090010, 'Creator 1.0', VR='LO')
+        ds.add_new(0x00090020, 'Creator 2.0', VR='LO')
+        ds.add_new(0x000900ff, 'Creator 3.0', VR='LO')
 
         assert (['Creator 1.0', 'Creator 2.0', 'Creator 3.0'] ==
                 ds.private_creators(0x0009))
@@ -1155,13 +1155,13 @@ class TestDataset:
         # after removing all private tags
         ds = Dataset()
         block = ds.private_block(0x000b, 'dog^1', create=True)
-        block.add_new(0x01, "SH", "Border Collie")
+        block.add_new(0x01, "Border Collie", "SH")
         block = ds.private_block(0x000b, 'dog^2', create=True)
-        block.add_new(0x01, "SH", "Poodle")
+        block.add_new(0x01, "Poodle", "SH")
 
         ds.remove_private_tags()
         block = ds.private_block(0x000b, 'dog^2', create=True)
-        block.add_new(0x01, "SH", "Poodle")
+        block.add_new(0x01, "Poodle", "SH")
         assert len(ds) == 2
         assert (0x000b0010) in ds
         assert ds[0x000b0010].value == 'dog^2'
@@ -1169,36 +1169,36 @@ class TestDataset:
     def test_create_private_tag_after_removing_private_creator(self):
         ds = Dataset()
         block = ds.private_block(0x000b, 'dog^1', create=True)
-        block.add_new(0x01, "SH", "Border Collie")
+        block.add_new(0x01, "Border Collie", "SH")
 
         del ds[0x000b0010]
         block = ds.private_block(0x000b, 'dog^1', create=True)
-        block.add_new(0x02, "SH", "Poodle")
+        block.add_new(0x02, "Poodle", "SH")
         assert len(ds) == 3
         assert ds[0x000b0010].value == 'dog^1'
 
         del ds[Tag(0x000b, 0x0010)]
         block = ds.private_block(0x000b, 'dog^1', create=True)
-        block.add_new(0x01, "SH", "Pug")
+        block.add_new(0x01, "Pug", "SH")
         assert len(ds) == 3
         assert ds[0x000b0010].value == 'dog^1'
 
         del ds['0x000b0010']
         block = ds.private_block(0x000b, 'dog^1', create=True)
-        block.add_new(0x01, "SH", "Pug")
+        block.add_new(0x01, "Pug", "SH")
         assert len(ds) == 3
         assert ds[0x000b0010].value == 'dog^1'
 
     def test_create_private_tag_after_removing_slice(self):
         ds = Dataset()
         block = ds.private_block(0x000b, 'dog^1', create=True)
-        block.add_new(0x01, "SH", "Border Collie")
+        block.add_new(0x01, "Border Collie", "SH")
         block = ds.private_block(0x000b, 'dog^2', create=True)
-        block.add_new(0x01, "SH", "Poodle")
+        block.add_new(0x01, "Poodle", "SH")
 
         del ds[0x000b0010:0x000b1110]
         block = ds.private_block(0x000b, 'dog^2', create=True)
-        block.add_new(0x01, "SH", "Poodle")
+        block.add_new(0x01, "Poodle", "SH")
         assert len(ds) == 2
         assert ds[0x000b0010].value == 'dog^2'
 
@@ -1232,8 +1232,8 @@ class TestDataset:
         ds = Dataset()
         ds.CommandGroupLength = 120  # 0000,0000
         ds.SkipFrameRangeFlag = 'TEST'  # 0008,9460
-        ds.add_new(0x00090001, 'PN', 'CITIZEN^1')
-        ds.add_new(0x00090010, 'PN', 'CITIZEN^10')
+        ds.add_new(0x00090001, 'CITIZEN^1', VR='PN')
+        ds.add_new(0x00090010, 'CITIZEN^10', VR='PN')
         ds.PatientName = 'CITIZEN^Jan'  # 0010,0010
 
         ds.remove_private_tags()
@@ -1247,7 +1247,7 @@ class TestDataset:
         ds = Dataset()
         ds.CommandGroupLength = 120
         ds.SkipFrameRangeFlag = 'TEST'
-        ds.add_new(0x00090001, 'PN', 'CITIZEN^1')
+        ds.add_new(0x00090001, 'CITIZEN^1', VR='PN')
         ds.BeamSequence = [Dataset()]
         ds.BeamSequence[0].PatientName = 'ANON'
         assert ds[0x00000000] == ds.data_element('CommandGroupLength')
@@ -1259,7 +1259,7 @@ class TestDataset:
         ds = Dataset()
         ds.CommandGroupLength = 120
         ds.SkipFrameRangeFlag = 'TEST'
-        ds.add_new(0x00090001, 'PN', 'CITIZEN^1')
+        ds.add_new(0x00090001, 'CITIZEN^1', VR='PN')
         ds.BeamSequence = [Dataset()]
         ds.BeamSequence[0].PatientName = 'ANON'
         elem_gen = ds.iterall()

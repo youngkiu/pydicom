@@ -97,9 +97,9 @@ class TestCodify:
         input_elem = [DataElement(0x00111010, 'PN', 'CITIZEN'),
                       DataElement(0x0081010c, 'UI', '1.1.2.3.4.5'),
                       DataElement(0x11110301, 'US', 1200)]
-        out_str = ["ds.add_new((0x0011, 0x1010), 'PN', 'CITIZEN')",
-                   "ds.add_new((0x0081, 0x010c), 'UI', '1.1.2.3.4.5')",
-                   "ds.add_new((0x1111, 0x0301), 'US', 1200)"]
+        out_str = ["ds.add_new((0x0011, 0x1010), 'CITIZEN', VR='PN')",
+                   "ds.add_new((0x0081, 0x010c), '1.1.2.3.4.5', VR='UI')",
+                   "ds.add_new((0x1111, 0x0301), 1200, VR='US')"]
         for elem, out in zip(input_elem, out_str):
             assert out == code_dataelem(elem)
 

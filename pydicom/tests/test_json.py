@@ -40,14 +40,14 @@ class TestPersonName:
             assert components[0] == value['Alphabetic']
 
         ds = Dataset()
-        ds.add_new(0x00100010, 'PN', 'Yamada^Tarou=山田^太郎=やまだ^たろう')
-        ds.add_new(0x00091001, 'PN', 'Yamada^Tarou')
-        ds.add_new(0x00091002, 'PN', 'Yamada^Tarou==')
-        ds.add_new(0x00091003, 'PN', '=山田^太郎=やまだ^たろう')
-        ds.add_new(0x00091004, 'PN', 'Yamada^Tarou==やまだ^たろう')
-        ds.add_new(0x00091005, 'PN', '==やまだ^たろう')
-        ds.add_new(0x00091006, 'PN', '=山田^太郎')
-        ds.add_new(0x00091007, 'PN', 'Yamada^Tarou=山田^太郎')
+        ds.add_new(0x00100010, 'Yamada^Tarou=山田^太郎=やまだ^たろう', VR='PN')
+        ds.add_new(0x00091001, 'Yamada^Tarou', VR='PN')
+        ds.add_new(0x00091002, 'Yamada^Tarou==', VR='PN')
+        ds.add_new(0x00091003, '=山田^太郎=やまだ^たろう', VR='PN')
+        ds.add_new(0x00091004, 'Yamada^Tarou==やまだ^たろう', VR='PN')
+        ds.add_new(0x00091005, '==やまだ^たろう', VR='PN')
+        ds.add_new(0x00091006, '=山田^太郎', VR='PN')
+        ds.add_new(0x00091007, 'Yamada^Tarou=山田^太郎', VR='PN')
         ds_json = ds.to_json_dict()
         check_name('00100010', ['Yamada^Tarou', '山田^太郎', 'やまだ^たろう'])
         check_name('00091001', ['Yamada^Tarou'])
@@ -95,7 +95,7 @@ class TestPersonName:
 
     def test_empty_value(self):
         ds = Dataset()
-        ds.add_new(0x00100010, 'PN', '')
+        ds.add_new(0x00100010, '')
         ds_json = ds.to_json_dict()
         assert '00100010' in ds_json
         assert 'Value' not in ds_json['00100010']
@@ -103,7 +103,7 @@ class TestPersonName:
     def test_multi_value_to_json(self):
         ds = Dataset()
         patient_names = ['Buc^Jérôme', 'Διονυσιος', 'Люкceмбypг']
-        ds.add_new(0x00091001, 'PN', patient_names)
+        ds.add_new(0x00091001, patient_names, VR='PN')
         ds_json = ds.to_json_dict()
         assert [{'Alphabetic': 'Buc^Jérôme'},
                 {'Alphabetic': 'Διονυσιος'},
@@ -120,10 +120,10 @@ class TestPersonName:
 class TestAT:
     def test_to_json(self):
         ds = Dataset()
-        ds.add_new(0x00091001, 'AT', [0x00100010, 0x00100020])
-        ds.add_new(0x00091002, 'AT', Tag(0x28, 0x02))
-        ds.add_new(0x00091003, 'AT', BaseTag(0x00280002))
-        ds.add_new(0x00091004, 'AT', [0x00280002, Tag('PatientName')])
+        ds.add_new(0x00091001, [0x00100010, 0x00100020], VR='AT')
+        ds.add_new(0x00091002, Tag(0x28, 0x02), VR='AT')
+        ds.add_new(0x00091003, BaseTag(0x00280002), VR='AT')
+        ds.add_new(0x00091004, [0x00280002, Tag('PatientName')], VR='AT')
         ds_json = ds.to_json_dict()
 
         assert ['00100010', '00100020'] == ds_json['00091001']['Value']
@@ -171,43 +171,43 @@ class TestDataSetToJson:
 
     def test_roundtrip(self):
         ds = Dataset()
-        ds.add_new(0x00080005, 'CS', 'ISO_IR 100')
-        ds.add_new(0x00090010, 'LO', 'Creator 1.0')
-        ds.add_new(0x00091001, 'SH', 'Version1')
-        ds.add_new(0x00091002, 'OB', b'BinaryContent')
-        ds.add_new(0x00091003, 'OW', b'\x0102\x3040\x5060')
-        ds.add_new(0x00091004, 'OF', b'\x00\x01\x02\x03\x04\x05\x06\x07')
-        ds.add_new(0x00091005, 'OD', b'\x00\x01\x02\x03\x04\x05\x06\x07'
-                                     b'\x01\x01\x02\x03\x04\x05\x06\x07')
-        ds.add_new(0x00091006, 'OL', b'\x00\x01\x02\x03\x04\x05\x06\x07'
-                                     b'\x01\x01\x02\x03')
-        ds.add_new(0x00091007, 'UI', '1.2.3.4.5.6')
-        ds.add_new(0x00091008, 'DA', '20200101')
-        ds.add_new(0x00091009, 'TM', '115500')
-        ds.add_new(0x0009100a, 'DT', '20200101115500.000000')
-        ds.add_new(0x0009100b, 'UL', 3000000000)
-        ds.add_new(0x0009100c, 'SL', -2000000000)
-        ds.add_new(0x0009100d, 'US', 40000)
-        ds.add_new(0x0009100e, 'SS', -22222)
-        ds.add_new(0x0009100f, 'FL', 3.14)
-        ds.add_new(0x00091010, 'FD', 3.14159265)
-        ds.add_new(0x00091011, 'CS', 'TEST MODE')
-        ds.add_new(0x00091012, 'PN', 'CITIZEN^1')
-        ds.add_new(0x00091013, 'PN', 'Yamada^Tarou=山田^太郎=やまだ^たろう')
-        ds.add_new(0x00091014, 'IS', '42')
-        ds.add_new(0x00091015, 'DS', '3.14159265')
-        ds.add_new(0x00091016, 'AE', b'CONQUESTSRV1')
-        ds.add_new(0x00091017, 'AS', '055Y')
-        ds.add_new(0x00091018, 'LT', 50 * 'Калинка,')
-        ds.add_new(0x00091019, 'UC', 'LONG CODE VALUE')
-        ds.add_new(0x0009101a, 'UN', b'\x0102\x3040\x5060')
-        ds.add_new(0x0009101b, 'UR', 'https://example.com')
-        ds.add_new(0x0009101c, 'AT', [0x00100010, 0x00100020])
-        ds.add_new(0x0009101d, 'ST', 100 * 'علي بابا')
-        ds.add_new(0x0009101e, 'SH', 'Διονυσιος')
-        ds.add_new(0x00090011, 'LO', 'Creator 2.0')
-        ds.add_new(0x00091101, 'SH', 'Version2')
-        ds.add_new(0x00091102, 'US', 2)
+        ds.add_new(0x00080005, 'ISO_IR 100', VR='CS')
+        ds.add_new(0x00090010, 'Creator 1.0', VR='LO')
+        ds.add_new(0x00091001, 'Version1', VR='SH')
+        ds.add_new(0x00091002, b'BinaryContent', VR='OB')
+        ds.add_new(0x00091003, b'\x0102\x3040\x5060', VR='OW')
+        ds.add_new(0x00091004, b'\x00\x01\x02\x03\x04\x05\x06\x07', VR='OF')
+        ds.add_new(0x00091005, b'\x00\x01\x02\x03\x04\x05\x06\x07'
+                               b'\x01\x01\x02\x03\x04\x05\x06\x07', VR='OD')
+        ds.add_new(0x00091006, b'\x00\x01\x02\x03\x04\x05\x06\x07'
+                               b'\x01\x01\x02\x03', VR='OL')
+        ds.add_new(0x00091007, '1.2.3.4.5.6', VR='UI')
+        ds.add_new(0x00091008, '20200101', VR='DA')
+        ds.add_new(0x00091009, '115500', VR='TM')
+        ds.add_new(0x0009100a, '20200101115500.000000', VR='DT')
+        ds.add_new(0x0009100b, 3000000000, VR='UL')
+        ds.add_new(0x0009100c, -2000000000, VR='SL')
+        ds.add_new(0x0009100d, 40000, VR='US')
+        ds.add_new(0x0009100e, -22222, VR='SS')
+        ds.add_new(0x0009100f, 3.14, VR='FL')
+        ds.add_new(0x00091010, 3.14159265, VR='FD')
+        ds.add_new(0x00091011, 'TEST MODE', VR='CS')
+        ds.add_new(0x00091012, 'CITIZEN^1', VR='PN')
+        ds.add_new(0x00091013, 'Yamada^Tarou=山田^太郎=やまだ^たろう', VR='PN')
+        ds.add_new(0x00091014, '42', VR='IS')
+        ds.add_new(0x00091015, '3.14159265', VR='DS')
+        ds.add_new(0x00091016, b'CONQUESTSRV1', VR='AE')
+        ds.add_new(0x00091017, '055Y', VR='AS')
+        ds.add_new(0x00091018, 50 * 'Калинка,', VR='LT')
+        ds.add_new(0x00091019, 'LONG CODE VALUE', VR='UC')
+        ds.add_new(0x0009101a, b'\x0102\x3040\x5060', VR='UN')
+        ds.add_new(0x0009101b, 'https://example.com', VR='UR')
+        ds.add_new(0x0009101c, [0x00100010, 0x00100020], VR='AT')
+        ds.add_new(0x0009101d, 100 * 'علي بابا', VR='ST')
+        ds.add_new(0x0009101e, 'Διονυσιος', VR='SH')
+        ds.add_new(0x00090011, 'Creator 2.0', VR='LO')
+        ds.add_new(0x00091101, 'Version2', VR='SH')
+        ds.add_new(0x00091102, 2, VR='US')
 
         json_string = ds.to_json()
         json_model = json.loads(json_string)
@@ -233,7 +233,7 @@ class TestDataSetToJson:
 
     def test_dataset_dumphandler(self):
         ds = Dataset()
-        ds.add_new(0x00100010, 'PN', 'Jane^Doe')
+        ds.add_new(0x00100010, 'Jane^Doe')
         # as the order of the keys is not defined, we have to check both
         assert ds.to_json() in ('{"00100010": {"vr": "PN", "Value": [{'
                                 '"Alphabetic": "Jane^Doe"}]}}',
@@ -260,10 +260,10 @@ class TestDataSetToJson:
     def test_sort_order(self):
         """Test that tags are serialized in ascending order."""
         ds = Dataset()
-        ds.add_new(0x00100040, 'CS', 'F')
-        ds.add_new(0x00100030, 'DA', '20000101')
-        ds.add_new(0x00100020, 'LO', '0017')
-        ds.add_new(0x00100010, 'PN', 'Jane^Doe')
+        ds.add_new(0x00100040, 'F')
+        ds.add_new(0x00100030, '20000101')
+        ds.add_new(0x00100020, '0017')
+        ds.add_new(0x00100010, 'Jane^Doe')
 
         ds_json = ds.to_json()
         assert ds_json.index('"00100010"') < ds_json.index('"00100020"')
@@ -286,7 +286,7 @@ class TestSequence:
 class TestBinary:
     def test_inline_binary(self):
         ds = Dataset()
-        ds.add_new(0x00091002, 'OB', b'BinaryContent')
+        ds.add_new(0x00091002, b'BinaryContent', VR='OB')
         ds_json = ds.to_json_dict()
         assert "00091002" in ds_json
         assert "QmluYXJ5Q29udGVudA==" == ds_json["00091002"]["InlineBinary"]
@@ -382,15 +382,15 @@ class TestNumeric:
     def test_numeric_values(self):
         ds = Dataset()
 
-        ds.add_new(0x0009100b, 'UL', 3000000000)
-        ds.add_new(0x0009100c, 'SL', -2000000000)
-        ds.add_new(0x0009100d, 'US', 40000)
-        ds.add_new(0x0009100e, 'SS', -22222)
-        ds.add_new(0x0009100f, 'FL', 3.14)
-        ds.add_new(0x00091010, 'FD', 3.14159265)
-        ds.add_new(0x00091014, 'IS', '42')
-        ds.add_new(0x00091015, 'DS', '3.14159265')
-        ds.add_new(0x00091102, 'US', 2)
+        ds.add_new(0x0009100b, 3000000000, VR='UL')
+        ds.add_new(0x0009100c, -2000000000, VR='SL')
+        ds.add_new(0x0009100d, 40000, VR='US')
+        ds.add_new(0x0009100e, -22222, VR='SS')
+        ds.add_new(0x0009100f, 3.14, VR='FL')
+        ds.add_new(0x00091010, 3.14159265, VR='FD')
+        ds.add_new(0x00091014, '42', VR='IS')
+        ds.add_new(0x00091015, '3.14159265', VR='DS')
+        ds.add_new(0x00091102, 2, VR='US')
 
         ds_json = ds.to_json_dict()
 
@@ -407,15 +407,15 @@ class TestNumeric:
     def test_numeric_types(self):
         ds = Dataset()
 
-        ds.add_new(0x0009100b, 'UL', 3000000000)
-        ds.add_new(0x0009100c, 'SL', -2000000000)
-        ds.add_new(0x0009100d, 'US', 40000)
-        ds.add_new(0x0009100e, 'SS', -22222)
-        ds.add_new(0x0009100f, 'FL', 3.14)
-        ds.add_new(0x00091010, 'FD', 3.14159265)
-        ds.add_new(0x00091014, 'IS', '42')
-        ds.add_new(0x00091015, 'DS', '3.14159265')
-        ds.add_new(0x00091102, 'US', 2)
+        ds.add_new(0x0009100b, 3000000000, VR='UL')
+        ds.add_new(0x0009100c, -2000000000, VR='SL')
+        ds.add_new(0x0009100d, 40000, VR='US')
+        ds.add_new(0x0009100e, -22222, VR='SS')
+        ds.add_new(0x0009100f, 3.14, VR='FL')
+        ds.add_new(0x00091010, 3.14159265, VR='FD')
+        ds.add_new(0x00091014, '42', VR='IS')
+        ds.add_new(0x00091015, '3.14159265', VR='DS')
+        ds.add_new(0x00091102, 2, VR='US')
 
         ds_json = ds.to_json_dict()
 

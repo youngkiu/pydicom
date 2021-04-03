@@ -49,7 +49,7 @@ class TestSequence:
     def testValidAssignment(self):
         """Sequence: ensure ability to assign a Dataset to a Sequence item"""
         ds = Dataset()
-        ds.add_new((1, 1), 'IS', 1)
+        ds.add_new((1, 1), 1, VR='IS')
 
         # Create a single element Sequence first
         seq = Sequence([Dataset(), ])
